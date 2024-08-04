@@ -78,12 +78,18 @@
 
         // Function to get the provider
         async function getProvider() {
-            if (window.solana && window.solana.isPhantom) {
-                return window.solana;
+            if ('solana' in window) {
+                const provider = window.solana;
+                if (provider.isPhantom) {
+                    return provider;
+                } else {
+                    console.log('Provider is not Phantom');
+                }
             } else {
-                window.open('https://phantom.app/', '_blank');
-                return null;
+                console.log('window.solana not found');
             }
+            window.open('https://phantom.app/', '_blank');
+            return null;
         }
 
         // Tap Button Logic
@@ -118,6 +124,16 @@
                   });
             } else {
                 console.log(`Tap ${tapCount} of ${tapThreshold}`);
+            }
+        });
+
+        // Check for the Phantom Wallet on page load
+        document.addEventListener('DOMContentLoaded', async () => {
+            const provider = await getProvider();
+            if (provider) {
+                console.log('Phantom wallet is available');
+            } else {
+                console.log('Phantom wallet is not available');
             }
         });
     </script>

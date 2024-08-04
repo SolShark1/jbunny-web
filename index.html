@@ -77,7 +77,7 @@
         document.getElementById('generateWalletButton').addEventListener('click', async function () {
             try {
                 logDebug('Generate Wallet button clicked.');
-                userKeypair = solanaWeb3.Keypair.generate();
+                userKeypair = window.solanaWeb3.Keypair.generate();
                 const publicKey = userKeypair.publicKey.toString();
                 logDebug('Generated new wallet: ' + publicKey);
                 document.getElementById('generateWalletButton').classList.add('hidden');

@@ -1,133 +1,46 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JBunny & Boosey</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/solana-web3.js/1.31.0/solana-web3.min.js"></script> <!-- Solana Web3.js -->
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin: 50px;
-        }
-        #kissMessage {
-            display: none;
-            margin-top: 20px;
-            font-size: 24px;
-            color: red;
-        }
-        .hidden {
-            display: none;
-        }
-        .visible {
-            display: block;
-        }
-        #cryptoEarned {
-            margin-top: 20px;
-            font-size: 20px;
-            color: green;
-        }
-        #kissButton {
-            padding: 10px 20px;
-            font-size: 18px;
-            cursor: pointer;
-        }
-        #generateWalletButton {
-            padding: 10px 20px;
-            font-size: 18px;
-            cursor: pointer;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-        }
-        #walletInfo {
-            margin-top: 20px;
-            font-size: 18px;
-            color: blue;
-        }
-    </style>
-</head>
-<body>
-    <h1>Welcome to JBunny & Boosey Game!</h1>
-    <p>Tap the button to make JBunny and Boosey kiss after 10 taps.</p>
-    <button id="generateWalletButton">Generate Wallet</button>
-    <button id="kissButton" class="hidden">Make JBunny kiss Boosey</button>
-    <div id="kissMessage">💖 JBunny and Boosey just kissed! 💖<br>The Meme Coin Love Story is coming true! 🌟</div>
-    <div id="cryptoEarned" class="hidden">You have earned 10 JBunnies!</div>
-    <img id="giftsImage" src="boosey%20raw.png" alt="Gifts" class="hidden" style="width: 200px; height: auto; margin-top: 20px;">
-    <div id="walletInfo" class="hidden"></div>
+const express = require('express');
+const bodyParser = require('body-parser');
+const fetch = require('node-fetch');
 
-    <script>
-        let tapCount = 0;
-        const tapThreshold = 10;
-        let userKeypair = null;
+const app = express();
+const PORT = process.env.PORT || 3000;
+const TELEGRAM_BOT_TOKEN = 7252679351:AAE_nqbKrzZhevl8FkJWtlxw6KDfiGHo2IA
 
-        // Debugging helper
-        function logDebug(message) {
-            console.log(message);
-            const debugDiv = document.getElementById('debugInfo');
-            if (debugDiv) {
-                debugDiv.innerText += message + '\n';
-            }
-        }
+app.use(bodyParser.json());
 
-        // Generate a new Solana wallet
-        document.getElementById('generateWalletButton').addEventListener('click', async function () {
-            try {
-                logDebug('Generate Wallet button clicked.');
-                userKeypair = window.solanaWeb3.Keypair.generate();
-                const publicKey = userKeypair.publicKey.toString();
-                logDebug('Generated new wallet: ' + publicKey);
-                document.getElementById('generateWalletButton').classList.add('hidden');
-                document.getElementById('kissButton').classList.remove('hidden');
-                document.getElementById('walletInfo').classList.remove('hidden');
-                document.getElementById('walletInfo').innerText = `Your Wallet Address: ${publicKey}`;
-            } catch (error) {
-                logDebug('Error generating wallet: ' + error.message);
-            }
+app.post('/send-wallet', async (req, res) => {
+    const { telegramId, walletAddress } = req.body;
+    const message = Your new wallet address: ${walletAddress};
+
+    try {
+        const response = await fetch(`https://api.telegram.org/bot${7252679351:AAE_nqbKrzZhevl8FkJWtlxw6KDfiGHo2IA}/sendMessage`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                chat_id: telegramId,
+                text: message,
+            }),
         });
 
-        // Tap Button Logic
-        document.getElementById('kissButton').addEventListener('click', function () {
-            tapCount++;
-            if (tapCount === tapThreshold) {
-                tapCount = 0;
+        if (response.ok) {
+            res.status(200).send('Wallet info sent to Telegram.');
+        } else {
+            res.status(500).send('Failed to send wallet info to Telegram.');
+        }
+    } catch (error) {
+        console.error('Error sending message to Telegram:', error);
+        res.status(500).send('Error sending message to Telegram.');
+    }
+});
 
-                document.getElementById('kissMessage').style.display = 'block';
-                document.getElementById('cryptoEarned').classList.remove('hidden');
-                document.getElementById('giftsImage').classList.remove('hidden');
+app.post('/reward-crypto', (req, res) => {
+    // Handle rewarding crypto to the user
+    // This is a placeholder and should be replaced with actual implementation
+    res.json({ success: true, message: 'Crypto rewarded to the user.' });
+});
 
-                // Send request to backend to reward crypto
-                fetch('/reward-crypto', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ user: 'username', receiverAddress: userKeypair.publicKey.toString(), amount: 10 }) // Replace with actual user info
-                }).then(response => response.json())
-                    .then(data => {
-                        logDebug('Success: ' + JSON.stringify(data));
-                        setTimeout(() => {
-                            location.reload();
-                        }, 2000);
-                    })
-                    .catch((error) => {
-                        logDebug('Error: ' + error.message);
-                        setTimeout(() => {
-                            location.reload();
-                        }, 2000);
-                    });
-            } else {
-                logDebug(`Tap ${tapCount} of ${tapThreshold}`);
-            }
-        });
-
-        document.addEventListener('DOMContentLoaded', async () => {
-            logDebug('Page loaded. Ready to generate wallet.');
-        });
-    </script>
-    <div id="debugInfo" style="margin-top: 20px; color: red;"></div>
-</body>
-</html>
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});

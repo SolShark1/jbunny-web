@@ -64,19 +64,33 @@
         const tapThreshold = 10;
         let userKeypair = null;
 
+        // Debugging helper
+        function logDebug(message) {
+            console.log(message);
+            const debugDiv = document.getElementById('debugInfo');
+            if (debugDiv) {
+                debugDiv.innerText += message + '\n';
+            }
+        }
+
         // Generate a new Solana wallet
-        document.getElementById('generateWalletButton').addEventListener('click', async function() {
-            userKeypair = solanaWeb3.Keypair.generate();
-            const publicKey = userKeypair.publicKey.toString();
-            console.log('Generated new wallet:', publicKey);
-            document.getElementById('generateWalletButton').classList.add('hidden');
-            document.getElementById('kissButton').classList.remove('hidden');
-            document.getElementById('walletInfo').classList.remove('hidden');
-            document.getElementById('walletInfo').innerText = `Your Wallet Address: ${publicKey}`;
+        document.getElementById('generateWalletButton').addEventListener('click', async function () {
+            try {
+                logDebug('Generate Wallet button clicked.');
+                userKeypair = solanaWeb3.Keypair.generate();
+                const publicKey = userKeypair.publicKey.toString();
+                logDebug('Generated new wallet: ' + publicKey);
+                document.getElementById('generateWalletButton').classList.add('hidden');
+                document.getElementById('kissButton').classList.remove('hidden');
+                document.getElementById('walletInfo').classList.remove('hidden');
+                document.getElementById('walletInfo').innerText = `Your Wallet Address: ${publicKey}`;
+            } catch (error) {
+                logDebug('Error generating wallet: ' + error.message);
+            }
         });
 
         // Tap Button Logic
-        document.getElementById('kissButton').addEventListener('click', function() {
+        document.getElementById('kissButton').addEventListener('click', function () {
             tapCount++;
             if (tapCount === tapThreshold) {
                 tapCount = 0;
@@ -93,26 +107,27 @@
                     },
                     body: JSON.stringify({ user: 'username', receiverAddress: userKeypair.publicKey.toString(), amount: 10 }) // Replace with actual user info
                 }).then(response => response.json())
-                  .then(data => {
-                      console.log('Success:', data);
-                      setTimeout(() => {
-                          location.reload();
-                      }, 2000);
-                  })
-                  .catch((error) => {
-                      console.error('Error:', error);
-                      setTimeout(() => {
-                          location.reload();
-                      }, 2000);
-                  });
+                    .then(data => {
+                        logDebug('Success: ' + JSON.stringify(data));
+                        setTimeout(() => {
+                            location.reload();
+                        }, 2000);
+                    })
+                    .catch((error) => {
+                        logDebug('Error: ' + error.message);
+                        setTimeout(() => {
+                            location.reload();
+                        }, 2000);
+                    });
             } else {
-                console.log(`Tap ${tapCount} of ${tapThreshold}`);
+                logDebug(`Tap ${tapCount} of ${tapThreshold}`);
             }
         });
 
         document.addEventListener('DOMContentLoaded', async () => {
-            console.log('Page loaded. Ready to generate wallet.');
+            logDebug('Page loaded. Ready to generate wallet.');
         });
     </script>
+    <div id="debugInfo" style="margin-top: 20px; color: red;"></div>
 </body>
 </html>

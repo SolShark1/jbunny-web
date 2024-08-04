@@ -1,1 +1,2 @@
 npm init -y
+npm install express body-parser dotenv bip39 @solana/web3.js

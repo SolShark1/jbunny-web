@@ -41,36 +41,4 @@
         let tapCount = 0;
         const tapThreshold = 10;
 
-        document.getElementById('kissButton').addEventListener('click', function() {
-            tapCount++;
-
-            if (tapCount === tapThreshold) {
-                // Reset tap count
-                tapCount = 0;
-
-                // Display kiss message and other elements
-                document.getElementById('kissMessage').classList.add('visible');
-                document.getElementById('cryptoEarned').classList.remove('hidden');
-                document.getElementById('giftsImage').classList.remove('hidden');
-
-                // Send request to backend to reward crypto
-                fetch('/reward-crypto', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ user: 'username', receiverAddress: 'user_wallet_address', amount: 10 }) // Replace with actual user info
-                }).then(response => response.json())
-                  .then(data => {
-                      console.log('Success:', data);
-                  })
-                  .catch((error) => {
-                      console.error('Error:', error);
-                  });
-            } else {
-                console.log(`Tap ${tapCount} of ${tapThreshold}`);
-            }
-        });
-    </script>
-</body>
-</html>
+        document

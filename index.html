@@ -33,7 +33,7 @@
             font-size: 18px;
             cursor: pointer;
         }
-        #connectWalletButton {
+        #generateWalletButton {
             padding: 10px 20px;
             font-size: 18px;
             cursor: pointer;
@@ -47,7 +47,7 @@
 <body>
     <h1>Welcome to JBunny & Boosey Game!</h1>
     <p>Tap the button to make JBunny and Boosey kiss after 10 taps.</p>
-    <button id="connectWalletButton">Connect Wallet</button>
+    <button id="generateWalletButton">Generate Wallet</button>
     <button id="kissButton" class="hidden">Make JBunny kiss Boosey</button>
     <div id="kissMessage">💖 JBunny and Boosey just kissed! 💖<br>The Meme Coin Love Story is coming true! 🌟</div>
     <div id="cryptoEarned" class="hidden">You have earned 10 JBunnies!</div>
@@ -56,41 +56,16 @@
     <script>
         let tapCount = 0;
         const tapThreshold = 10;
-        let userAddress = '';
+        let userKeypair = null;
 
-        // Connect Phantom Wallet
-        document.getElementById('connectWalletButton').addEventListener('click', async function() {
-            try {
-                const provider = await getProvider();
-                if (provider) {
-                    await provider.connect();
-                    userAddress = provider.publicKey.toString();
-                    document.getElementById('connectWalletButton').classList.add('hidden');
-                    document.getElementById('kissButton').classList.remove('hidden');
-                    console.log('Connected:', userAddress);
-                } else {
-                    alert('Phantom wallet not found. Please install Phantom.');
-                }
-            } catch (error) {
-                console.error('Error connecting to Phantom wallet:', error);
-            }
+        // Generate a new Solana wallet
+        document.getElementById('generateWalletButton').addEventListener('click', async function() {
+            userKeypair = solanaWeb3.Keypair.generate();
+            const publicKey = userKeypair.publicKey.toString();
+            console.log('Generated new wallet:', publicKey);
+            document.getElementById('generateWalletButton').classList.add('hidden');
+            document.getElementById('kissButton').classList.remove('hidden');
         });
-
-        // Function to get the provider
-        async function getProvider() {
-            if ('solana' in window) {
-                const provider = window.solana;
-                if (provider.isPhantom) {
-                    return provider;
-                } else {
-                    console.log('Provider is not Phantom');
-                }
-            } else {
-                console.log('window.solana not found');
-            }
-            window.open('https://phantom.app/', '_blank');
-            return null;
-        }
 
         // Tap Button Logic
         document.getElementById('kissButton').addEventListener('click', function() {
@@ -108,7 +83,7 @@
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ user: 'username', receiverAddress: userAddress, amount: 10 }) // Replace with actual user info
+                    body: JSON.stringify({ user: 'username', receiverAddress: userKeypair.publicKey.toString(), amount: 10 }) // Replace with actual user info
                 }).then(response => response.json())
                   .then(data => {
                       console.log('Success:', data);
@@ -129,12 +104,7 @@
 
         // Check for the Phantom Wallet on page load
         document.addEventListener('DOMContentLoaded', async () => {
-            const provider = await getProvider();
-            if (provider) {
-                console.log('Phantom wallet is available');
-            } else {
-                console.log('Phantom wallet is not available');
-            }
+            console.log('Page loaded. Ready to generate wallet.');
         });
     </script>
 </body>

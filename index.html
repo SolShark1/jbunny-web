@@ -78,13 +78,12 @@
 
         // Function to get the provider
         async function getProvider() {
-            if ("solana" in window) {
-                const provider = window.solana;
-                if (provider.isPhantom) {
-                    return provider;
-                }
+            if (window.solana && window.solana.isPhantom) {
+                return window.solana;
+            } else {
+                window.open('https://phantom.app/', '_blank');
+                return null;
             }
-            window.open('https://phantom.app/', '_blank');
         }
 
         // Tap Button Logic

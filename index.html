@@ -39,33 +39,38 @@
     <p>Tap the button to make JBunny and Boosey kiss after 10 taps.</p>
     <button id="kissButton">Make JBunny kiss Boosey</button>
     <div id="kissMessage">💖 JBunny and Boosey just kissed! 💖<br>The Meme Coin Love Story is coming true! 🌟</div>
-    <div id="pointsEarned" class="hidden">You have earned 10 points!</div>
+    <div id="pointsEarned" class="hidden">You have earned 10 JBunny tokens!</div>
     <img id="giftsImage" src="boosey%20raw.gif" alt="Gifts" class="hidden" style="width: 200px; height: auto; margin-top: 20px;">
 
     <script>
         let tapCount = 0;
         const tapThreshold = 10;
-        let points = 0;
+        let tokens = 0;
 
-        // Tap Button Logic
         document.getElementById('kissButton').addEventListener('click', function() {
             tapCount++;
             if (tapCount === tapThreshold) {
                 tapCount = 0;
-                points += 10;
+                tokens += 10;
 
                 document.getElementById('kissMessage').style.display = 'block';
                 document.getElementById('pointsEarned').classList.remove('hidden');
-                document.getElementById('pointsEarned').innerText = `You have earned ${points} points!`;
+                document.getElementById('pointsEarned').innerText = You have earned ${tokens} JBunny tokens!;
                 document.getElementById('giftsImage').classList.remove('hidden');
                 
-                // Reset message and image after a short delay
                 setTimeout(() => {
                     document.getElementById('kissMessage').style.display = 'none';
                     document.getElementById('giftsImage').classList.add('hidden');
                 }, 2000);
+
+                // Update JBunny tokens in user's wallet
+                updateJBunnyTokens(tokens);
             }
         });
+
+        function updateJBunnyTokens(tokens) {
+            // Add your API call or logic here to update the JBunny tokens in the user's wallet
+        }
     </script>
 </body>
 </html>

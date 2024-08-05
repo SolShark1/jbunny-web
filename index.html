@@ -5,11 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JBunny & Boosey</title>
     <style>
-        /* ... existing styles ... */
+        /* Add your existing styles here */
+        #kissMessage, #giftsImage, #pointsEarned {
+            display: none;
+        }
     </style>
 </head>
 <body>
-    <!-- ... existing HTML ... -->
+    <button id="kissButton">Kiss Me!</button>
+    <div id="kissMessage">Kiss Activated!</div>
+    <div id="pointsEarned" class="hidden"></div>
+    <img id="giftsImage" src="boosey raw.gif" alt="Gifts">
 
     <script>
         let tapCount = 0;
@@ -24,7 +30,7 @@
 
                 document.getElementById('kissMessage').style.display = 'block';
                 document.getElementById('pointsEarned').classList.remove('hidden');
-                document.getElementById('pointsEarned').innerText = You have earned ${points} points!;
+                document.getElementById('pointsEarned').innerText = You have earned ${tokens} JBunny tokens!;
                 document.getElementById('giftsImage').classList.remove('hidden');
                 
                 setTimeout(() => {

@@ -34,11 +34,11 @@
                 document.getElementById('kissMessage').style.display = 'block';
                 document.getElementById('pointsEarned').classList.remove('hidden');
                 document.getElementById('pointsEarned').innerText = You have earned ${tokens} JBunny tokens!;
-                document.getElementById('giftsImage').classList.remove('hidden');
+                document.getElementById('giftsImage').style.display = 'block';
                 
                 setTimeout(() => {
                     document.getElementById('kissMessage').style.display = 'none';
-                    document.getElementById('giftsImage').classList.add('hidden');
+                    document.getElementById('giftsImage').style.display = 'none';
                     document.getElementById('pointsEarned').classList.add('hidden');
                 }, 2000);
 

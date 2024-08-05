@@ -1,44 +1,17 @@
-npm init -y
-                npm install express body-parser dotenv bip39 @solana/web3.require('dotenv').config();
-const express = require('express');
-const bodyParser = require('body-parser');
-const bip39 = require('bip39');
-const { Connection, PublicKey, Transaction, SystemProgram, Keypair } = require('@solana/web3.js');
-
-const app = express();
-app.use(bodyParser.json());
-
-// Solana setup
-const connection = new Connection(process.env.SOLANA_API_URL || 'https://api.mainnet-beta.solana.com');
-
-const mnemonic = process.env.MNEMONIC;
-const seed = bip39.mnemonicToSeedSync(mnemonic).slice(0, 32); // Convert mnemonic to seed and take the first 32 bytes
-const sender = Keypair.fromSeed(seed);
-
-async function sendCrypto(receiverAddress, amount) {
-    const receiver = new PublicKey(receiverAddress);
-    const transaction = new Transaction().add(
-        SystemProgram.transfer({
-            fromPubkey: sender.publicKey,
-            toPubkey: receiver,
-            lamports: amount * 1e9 // Convert SOL to lamports
-        })
-    );
-    const signature = await connection.sendTransaction(transaction, [sender]);
-    await connection.confirmTransaction(signature);
-    return signature;
-}
-
-app.post('/reward-crypto', async (req, res) => {
-    try {
-        const { receiverAddress, amount } = req.body;
-        const signature = await sendCrypto(receiverAddress, amount);
-        res.json({ success: true, signature });
-    } catch (error) {
-        res.status(500).json({ success: false, error: error.message });
+{
+    "name": "jbunny-web",
+    "version": "1.0.0",
+    "description": "",
+    "main": "server.js",
+    "scripts": {
+      "start": "node server.js"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+      "express": "^4.17.1",
+      "body-parser": "^1.19.0",
+      "dotenv": "^10.0.0"
     }
-});
-
-app.listen(3000, () => {
-    console.log('Server is running on port 3000');
-npm start
+  }

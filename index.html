@@ -9,6 +9,9 @@
         #kissMessage, #giftsImage, #pointsEarned {
             display: none;
         }
+        .hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -36,6 +39,7 @@
                 setTimeout(() => {
                     document.getElementById('kissMessage').style.display = 'none';
                     document.getElementById('giftsImage').classList.add('hidden');
+                    document.getElementById('pointsEarned').classList.add('hidden');
                 }, 2000);
 
                 // Update JBunny tokens in user's wallet

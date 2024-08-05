@@ -27,9 +27,11 @@
 
         document.getElementById('kissButton').addEventListener('click', function() {
             tapCount++;
+            console.log(`Tap count: ${tapCount}`);
             if (tapCount === tapThreshold) {
                 tapCount = 0;
                 tokens += 10;
+                console.log(`Tokens earned: ${tokens}`);
 
                 document.getElementById('kissMessage').style.display = 'block';
                 document.getElementById('pointsEarned').classList.remove('hidden');

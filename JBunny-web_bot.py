@@ -37,7 +37,7 @@
     <button id="kissButton">Make JBunny kiss Boosey</button>
     <div id="kissMessage">💖 JBunny and Boosey just kissed! 💖<br>The Meme Coin Love Story is coming true! 🌟</div>
     <div id="cryptoEarned" class="hidden">You have earned 10 Crypto!</div>
-    <img id="giftsImage" src="path_to_your_gifts_image.png" alt="Gifts" class="hidden" style="width: 200px; height: auto; margin-top: 20px;">
+    <img id="giftsImage" src="boosey raw.gif" alt="Gifts" class="hidden" style="width: 200px; height: auto; margin-top: 20px;">
 
     <script>
         document.getElementById('kissButton').addEventListener('click', function() {

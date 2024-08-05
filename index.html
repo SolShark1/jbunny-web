@@ -23,6 +23,7 @@
         let tokens = 0;
 
         document.getElementById('kissButton').addEventListener('click', function() {
+            console.log("Button clicked"); // Add this line
             tapCount++;
             if (tapCount === tapThreshold) {
                 tapCount = 0;

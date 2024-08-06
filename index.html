@@ -56,7 +56,7 @@
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ tokens })
+                body: JSON.stringify({ tokens }) // This is line 38
             })
             .then(response => response.json())
             .then(data => {

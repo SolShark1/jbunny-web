@@ -8,10 +8,6 @@ load_dotenv()
 TOKEN = os.getenv('BOT_TOKEN')
 WALLET_SEED_PHRASE = os.getenv('WALLET_SEED_PHRASE')
 
-# Debugging statements to ensure the environment variables are loaded
-print(f"TOKEN: {TOKEN}")
-print(f"WALLET_SEED_PHRASE: {WALLET_SEED_PHRASE}")
-
 # Game state
 user_taps = {}
 
@@ -39,7 +35,6 @@ def reward_user_with_tokens(user_id):
     print(f"Rewarding user {user_id} with tokens using wallet seed phrase: {WALLET_SEED_PHRASE}")
 
 def main():
-    print("Starting bot...")  # Debugging statement
     updater = Updater(TOKEN, use_context=True)
     dp = updater.dispatcher
 
@@ -51,4 +46,3 @@ def main():
 
 if name == '__main__':
     main()
-    

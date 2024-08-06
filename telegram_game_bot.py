@@ -1,6 +1,6 @@
 from dotenv import load_dotenv
 import os
-from telegram import Bot, Update
+from telegram import Update
 from telegram.ext import CommandHandler, CallbackContext, Updater
 
 # Load environment variables

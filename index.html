@@ -18,7 +18,7 @@
     <button id="kissButton">Make JBunny kiss Boosey</button>
     <div id="kissMessage">Kiss Activated!</div>
     <div id="pointsEarned" class="hidden"></div>
-    <img id="giftsImage" src="boosey raw.gif" alt="Gifts">
+    <img id="giftsImage" src="boosey%20raw.gif" alt="Gifts">
 
     <script>
         let tapCount = 0;
@@ -26,7 +26,9 @@
         let tokens = 0;
 
         document.getElementById('kissButton').addEventListener('click', function() {
+            console.log('Button clicked');
             tapCount++;
+            console.log('tapCount:', tapCount);
             if (tapCount === tapThreshold) {
                 tapCount = 0;
                 tokens += 10;
@@ -48,6 +50,7 @@
         });
 
         function updateJBunnyTokens(tokens) {
+            console.log('Updating tokens:', tokens);
             fetch('/api/update-tokens', {
                 method: 'POST',
                 headers: {

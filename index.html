@@ -18,7 +18,7 @@
     <button id="kissButton">Make JBunny kiss Boosey</button>
     <div id="kissMessage">Kiss Activated!</div>
     <div id="pointsEarned" class="hidden"></div>
-    <img id="giftsImage" src="boosey%20raw.gif" alt="Gifts">
+    <img id="giftsImage" src="boosey%20raw.png" alt="Gifts">
 
     <script>
         let tapCount = 0;
@@ -56,7 +56,7 @@
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ tokens }) // This is line 38
+                body: JSON.stringify({ tokens })
             })
             .then(response => response.json())
             .then(data => {

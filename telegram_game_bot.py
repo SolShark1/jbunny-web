@@ -11,23 +11,23 @@ WALLET_SEED_PHRASE = os.getenv('WALLET_SEED_PHRASE')
 # Game state
 user_taps = {}
 
-def start(update: Update, context: CallbackContext):
-    update.message.reply_text('Welcome to the game! Tap the button 10 times to win.')
+async def start(update: Update, context: CallbackContext):
+    await update.message.reply_text('Welcome to the game! Tap the button 10 times to win.')
 
-def tap(update: Update, context: CallbackContext):
+async def tap(update: Update, context: CallbackContext):
     user_id = update.message.from_user.id
     user_taps[user_id] = user_taps.get(user_id, 0) + 1
 
     if user_taps[user_id] >= 10:
-        update.message.reply_text('Congratulations! You earned 10 JBunny tokens.')
+        await update.message.reply_text('Congratulations! You earned 10 JBunny tokens.')
         user_taps[user_id] = 0  # Reset the tap count
         # Logic to award tokens using WALLET_SEED_PHRASE
         reward_user_with_tokens(user_id)
         # Send the image
         with open('boosey raw.gif', 'rb') as photo:
-            context.bot.send_photo(chat_id=update.effective_chat.id, photo=photo)
+            await context.bot.send_photo(chat_id=update.effective_chat.id, photo=photo)
     else:
-        update.message.reply_text(f'Tap count: {user_taps[user_id]}')
+        await update.message.reply_text(f'Tap count: {user_taps[user_id]}')
 
 def reward_user_with_tokens(user_id):
     # Placeholder for logic to transfer JBunny tokens from the wallet

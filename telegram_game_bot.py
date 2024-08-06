@@ -1,7 +1,7 @@
 from dotenv import load_dotenv
 import os
 from telegram import Update
-from telegram.ext import CommandHandler, CallbackContext, Updater
+from telegram.ext import CommandHandler, CallbackContext, Updater, ApplicationBuilder
 
 # Load environment variables
 load_dotenv()
@@ -35,14 +35,12 @@ def reward_user_with_tokens(user_id):
     print(f"Rewarding user {user_id} with tokens using wallet seed phrase: {WALLET_SEED_PHRASE}")
 
 def main():
-    updater = Updater(TOKEN, use_context=True)
-    dp = updater.dispatcher
+    application = ApplicationBuilder().token(TOKEN).build()
 
-    dp.add_handler(CommandHandler('start', start))
-    dp.add_handler(CommandHandler('tap', tap))
+    application.add_handler(CommandHandler('start', start))
+    application.add_handler(CommandHandler('tap', tap))
 
-    updater.start_polling()
-    updater.idle()
+    application.run_polling()
 
-if __name__ == '__main__':
+if name == '__main__':
     main()

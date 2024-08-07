@@ -1,7 +1,7 @@
 import os
 import logging
-from telegram import Update
-from telegram.ext import Updater, CommandHandler, MessageHandler, filters, CallbackContext
+from telegram import Update, ForceReply
+from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
 
 # Enable logging
 logging.basicConfig(
@@ -12,20 +12,24 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # Define a few command handlers
-def start(update: Update, context: CallbackContext) -> None:
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Send a message when the command /start is issued."""
-    update.message.reply_text('Hi! Welcome to YourTradeBot! Use /connect to connect your wallet.')
+    user = update.effective_user
+    await update.message.reply_html(
+        rf'Hi {user.mention_html()}! Welcome to YourTradeBot! Use /connect to connect your wallet.',
+        reply_markup=ForceReply(selective=True),
+    )
 
-def connect(update: Update, context: CallbackContext) -> None:
+async def connect(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Simulate wallet connection."""
     try:
         # Simulate wallet authentication
         account = authenticate_with_okto()
-        update.message.reply_text(f'Wallet connected: {account["address"]}')
+        await update.message.reply_text(f'Wallet connected: {account["address"]}')
     except Exception as e:
-        update.message.reply_text(f'Error connecting wallet: {str(e)}')
+        await update.message.reply_text(f'Error connecting wallet: {str(e)}')
 
-def swap(update: Update, context: CallbackContext) -> None:
+async def swap(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Simulate token swapping."""
     try:
         params = context.args
@@ -36,13 +40,13 @@ def swap(update: Update, context: CallbackContext) -> None:
         
         # Simulate token swap
         result = swap_tokens(from_token, to_token, amount)
-        update.message.reply_text(f'Swap successful: {result}')
+        await update.message.reply_text(f'Swap successful: {result}')
     except Exception as e:
-        update.message.reply_text(f'Error during swap: {str(e)}')
+        await update.message.reply_text(f'Error during swap: {str(e)}')
 
-def echo(update: Update, context: CallbackContext) -> None:
+async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Echo the user message."""
-    update.message.reply_text(update.message.text)
+    await update.message.reply_text(update.message.text)
 
 def authenticate_with_okto():
     """Simulate wallet authentication."""
@@ -54,26 +58,19 @@ def swap_tokens(from_token, to_token, amount):
 
 def main() -> None:
     """Start the bot."""
-    # Create the Updater and pass it your bot's token.
-    updater = Updater(os.getenv("TELEGRAM_BOT_TOKEN"))
-
-    # Get the dispatcher to register handlers
-    dispatcher = updater.dispatcher
+    # Create the Application and pass it your bot's token.
+    application = Application.builder().token(os.getenv("TELEGRAM_BOT_TOKEN")).build()
 
     # on different commands - answer in Telegram
-    dispatcher.add_handler(CommandHandler("start", start))
-    dispatcher.add_handler(CommandHandler("connect", connect))
-    dispatcher.add_handler(CommandHandler("swap", swap, pass_args=True))
+    application.add_handler(CommandHandler("start", start))
+    application.add_handler(CommandHandler("connect", connect))
+    application.add_handler(CommandHandler("swap", swap))
 
     # on noncommand i.e message - echo the message on Telegram
-    dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, echo))
+    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, echo))
 
     # Start the Bot
-    updater.start_polling()
+    application.run_polling()
 
-    # Run the bot until you press Ctrl-C or the process receives SIGINT,
-    # SIGTERM or SIGABRT
-    updater.idle()
-
-if __name__ == "__main__":
+if name == "__main__":
     main()

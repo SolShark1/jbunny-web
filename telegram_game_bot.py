@@ -68,5 +68,5 @@ def main():
     except Exception as e:
         logger.error(f"Error: {e}")
 
-if__name__ == '__main__':
-main()
+    if__name__ == '__main__':
+    main()

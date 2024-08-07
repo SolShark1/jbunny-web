@@ -1,7 +1,7 @@
 from dotenv import load_dotenv
 import os
 from telegram import Update
-from telegram.ext import CommandHandler, ApplicationBuilder, ContextTypes
+from telegram.ext import CommandHandler, ApplicationBuilder, ContextTypes, MessageHandler, filters
 import logging
 
 # Enable logging
@@ -16,9 +16,9 @@ load_dotenv()
 TOKEN = os.getenv('BOT_TOKEN')
 WALLET_SEED_PHRASE = os.getenv('WALLET_SEED_PHRASE')
 
-# Debugging: Print environment variables (remove these lines in production)
-print(f"TOKEN: {TOKEN}")
-print(f"WALLET_SEED_PHRASE: {WALLET_SEED_PHRASE}")
+if not TOKEN or not WALLET_SEED_PHRASE:
+    logger.error("Environment variables BOT_TOKEN or WALLET_SEED_PHRASE are missing.")
+    exit(1)
 
 # Game state
 user_taps = {}
@@ -33,27 +33,41 @@ async def tap(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if user_taps[user_id] >= 10:
         await update.message.reply_text('Congratulations! You earned 10 JBunny tokens.')
         user_taps[user_id] = 0  # Reset the tap count
-        # Logic to award tokens using WALLET_SEED_PHRASE
-        reward_user_with_tokens(user_id)
-        # Send the image
-        with open('boosey raw.gif', 'rb') as photo:
-            await context.bot.send_photo(chat_id=update.effective_chat.id, photo=photo)
+        try:
+            # Logic to award tokens using WALLET_SEED_PHRASE
+            reward_user_with_tokens(user_id)
+            # Send the image
+            with open('boosey raw.gif', 'rb') as photo:
+                await context.bot.send_photo(chat_id=update.effective_chat.id, photo=photo)
+        except Exception as e:
+            logger.error(f"Error rewarding user: {e}")
+            await update.message.reply_text('An error occurred while rewarding tokens.')
     else:
         await update.message.reply_text(f'Tap count: {user_taps[user_id]}')
 
 def reward_user_with_tokens(user_id):
     # Placeholder for logic to transfer JBunny tokens from the wallet
     # This function should interact with the blockchain or token management system
-    print(f"Rewarding user {user_id} with tokens using wallet seed phrase: {WALLET_SEED_PHRASE}")
+    logger.info(f"Rewarding user {user_id} with tokens.")
+    # Example logic
+    # transaction = blockchain_api.send_tokens(WALLET_SEED_PHRASE, user_id, amount=10)
+    # if transaction.success:
+    #     logger.info(f"Successfully rewarded user {user_id}. Transaction ID: {transaction.id}")
+    # else:
+    #     logger.error(f"Failed to reward user {user_id}. Error: {transaction.error}")
+
+def register_handlers(application):
+    application.add_handler(CommandHandler('start', start))
+    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, tap))
 
 def main():
     try:
         application = ApplicationBuilder().token(TOKEN).build()
-        application.add_handler(CommandHandler('start', start))
-        application.add_handler(CommandHandler('tap', tap))
+        register_handlers(application)
         application.run_polling()
     except Exception as e:
         logger.error(f"Error: {e}")
 
-if __name__ == '__main__':
+if name == '__main__':
     main()
+    
